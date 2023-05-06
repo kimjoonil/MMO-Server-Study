@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -66,7 +66,7 @@ public class MapManager
 
 		CurrentGrid = go.GetComponent<Grid>();
 
-		// Collision °ü·Ã ÆÄÀÏ
+		// Collision ê´€ë ¨ íŒŒì¼
 		TextAsset txt = Managers.Resource.Load<TextAsset>($"Map/{mapName}");
 		StringReader reader = new StringReader(txt.text);
 
@@ -110,18 +110,18 @@ public class MapManager
 	{
 		List<Pos> path = new List<Pos>();
 
-		// Á¡¼ö ¸Å±â±â
+		// ì ìˆ˜ ë§¤ê¸°ê¸°
 		// F = G + H
-		// F = ÃÖÁ¾ Á¡¼ö (ÀÛÀ» ¼ö·Ï ÁÁÀ½, °æ·Î¿¡ µû¶ó ´Ş¶óÁü)
-		// G = ½ÃÀÛÁ¡¿¡¼­ ÇØ´ç ÁÂÇ¥±îÁö ÀÌµ¿ÇÏ´Âµ¥ µå´Â ºñ¿ë (ÀÛÀ» ¼ö·Ï ÁÁÀ½, °æ·Î¿¡ µû¶ó ´Ş¶óÁü)
-		// H = ¸ñÀûÁö¿¡¼­ ¾ó¸¶³ª °¡±î¿îÁö (ÀÛÀ» ¼ö·Ï ÁÁÀ½, °íÁ¤)
+		// F = ìµœì¢… ì ìˆ˜ (ì‘ì„ ìˆ˜ë¡ ì¢‹ìŒ, ê²½ë¡œì— ë”°ë¼ ë‹¬ë¼ì§)
+		// G = ì‹œì‘ì ì—ì„œ í•´ë‹¹ ì¢Œí‘œê¹Œì§€ ì´ë™í•˜ëŠ”ë° ë“œëŠ” ë¹„ìš© (ì‘ì„ ìˆ˜ë¡ ì¢‹ìŒ, ê²½ë¡œì— ë”°ë¼ ë‹¬ë¼ì§)
+		// H = ëª©ì ì§€ì—ì„œ ì–¼ë§ˆë‚˜ ê°€ê¹Œìš´ì§€ (ì‘ì„ ìˆ˜ë¡ ì¢‹ìŒ, ê³ ì •)
 
-		// (y, x) ÀÌ¹Ì ¹æ¹®Çß´ÂÁö ¿©ºÎ (¹æ¹® = closed »óÅÂ)
+		// (y, x) ì´ë¯¸ ë°©ë¬¸í–ˆëŠ”ì§€ ì—¬ë¶€ (ë°©ë¬¸ = closed ìƒíƒœ)
 		bool[,] closed = new bool[SizeY, SizeX]; // CloseList
 
-		// (y, x) °¡´Â ±æÀ» ÇÑ ¹øÀÌ¶óµµ ¹ß°ßÇß´ÂÁö
-		// ¹ß°ßX => MaxValue
-		// ¹ß°ßO => F = G + H
+		// (y, x) ê°€ëŠ” ê¸¸ì„ í•œ ë²ˆì´ë¼ë„ ë°œê²¬í–ˆëŠ”ì§€
+		// ë°œê²¬X => MaxValue
+		// ë°œê²¬O => F = G + H
 		int[,] open = new int[SizeY, SizeX]; // OpenList
 		for (int y = 0; y < SizeY; y++)
 			for (int x = 0; x < SizeX; x++)
@@ -129,57 +129,57 @@ public class MapManager
 
 		Pos[,] parent = new Pos[SizeY, SizeX];
 
-		// ¿ÀÇÂ¸®½ºÆ®¿¡ ÀÖ´Â Á¤º¸µé Áß¿¡¼­, °¡Àå ÁÁÀº ÈÄº¸¸¦ ºü¸£°Ô »Ì¾Æ¿À±â À§ÇÑ µµ±¸
+		// ì˜¤í”ˆë¦¬ìŠ¤íŠ¸ì— ìˆëŠ” ì •ë³´ë“¤ ì¤‘ì—ì„œ, ê°€ì¥ ì¢‹ì€ í›„ë³´ë¥¼ ë¹ ë¥´ê²Œ ë½‘ì•„ì˜¤ê¸° ìœ„í•œ ë„êµ¬
 		PriorityQueue<PQNode> pq = new PriorityQueue<PQNode>();
 
 		// CellPos -> ArrayPos
 		Pos pos = Cell2Pos(startCellPos);
 		Pos dest = Cell2Pos(destCellPos);
 
-		// ½ÃÀÛÁ¡ ¹ß°ß (¿¹¾à ÁøÇà)
+		// ì‹œì‘ì  ë°œê²¬ (ì˜ˆì•½ ì§„í–‰)
 		open[pos.Y, pos.X] = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X));
 		pq.Push(new PQNode() { F = 10 * (Math.Abs(dest.Y - pos.Y) + Math.Abs(dest.X - pos.X)), G = 0, Y = pos.Y, X = pos.X });
 		parent[pos.Y, pos.X] = new Pos(pos.Y, pos.X);
 
 		while (pq.Count > 0)
 		{
-			// Á¦ÀÏ ÁÁÀº ÈÄº¸¸¦ Ã£´Â´Ù
+			// ì œì¼ ì¢‹ì€ í›„ë³´ë¥¼ ì°¾ëŠ”ë‹¤
 			PQNode node = pq.Pop();
-			// µ¿ÀÏÇÑ ÁÂÇ¥¸¦ ¿©·¯ °æ·Î·Î Ã£¾Æ¼­, ´õ ºü¸¥ °æ·Î·Î ÀÎÇØ¼­ ÀÌ¹Ì ¹æ¹®(closed)µÈ °æ¿ì ½ºÅµ
+			// ë™ì¼í•œ ì¢Œí‘œë¥¼ ì—¬ëŸ¬ ê²½ë¡œë¡œ ì°¾ì•„ì„œ, ë” ë¹ ë¥¸ ê²½ë¡œë¡œ ì¸í•´ì„œ ì´ë¯¸ ë°©ë¬¸(closed)ëœ ê²½ìš° ìŠ¤í‚µ
 			if (closed[node.Y, node.X])
 				continue;
 
-			// ¹æ¹®ÇÑ´Ù
+			// ë°©ë¬¸í•œë‹¤
 			closed[node.Y, node.X] = true;
-			// ¸ñÀûÁö µµÂøÇßÀ¸¸é ¹Ù·Î Á¾·á
+			// ëª©ì ì§€ ë„ì°©í–ˆìœ¼ë©´ ë°”ë¡œ ì¢…ë£Œ
 			if (node.Y == dest.Y && node.X == dest.X)
 				break;
 
-			// »óÇÏÁÂ¿ì µî ÀÌµ¿ÇÒ ¼ö ÀÖ´Â ÁÂÇ¥ÀÎÁö È®ÀÎÇØ¼­ ¿¹¾à(open)ÇÑ´Ù
+			// ìƒí•˜ì¢Œìš° ë“± ì´ë™í•  ìˆ˜ ìˆëŠ” ì¢Œí‘œì¸ì§€ í™•ì¸í•´ì„œ ì˜ˆì•½(open)í•œë‹¤
 			for (int i = 0; i < _deltaY.Length; i++)
 			{
 				Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
 
-				// À¯È¿ ¹üÀ§¸¦ ¹ş¾î³µÀ¸¸é ½ºÅµ
-				// º®À¸·Î ¸·Çô¼­ °¥ ¼ö ¾øÀ¸¸é ½ºÅµ
+				// ìœ íš¨ ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ìœ¼ë©´ ìŠ¤í‚µ
+				// ë²½ìœ¼ë¡œ ë§‰í˜€ì„œ ê°ˆ ìˆ˜ ì—†ìœ¼ë©´ ìŠ¤í‚µ
 				if (!ignoreDestCollision || next.Y != dest.Y || next.X != dest.X)
 				{
 					if (CanGo(Pos2Cell(next)) == false) // CellPos
 						continue;
 				}
-
-				// ÀÌ¹Ì ¹æ¹®ÇÑ °÷ÀÌ¸é ½ºÅµ
+				
+				// ì´ë¯¸ ë°©ë¬¸í•œ ê³³ì´ë©´ ìŠ¤í‚µ
 				if (closed[next.Y, next.X])
 					continue;
 
-				// ºñ¿ë °è»ê
+				// ë¹„ìš© ê³„ì‚°
 				int g = 0;// node.G + _cost[i];
 				int h = 10 * ((dest.Y - next.Y) * (dest.Y - next.Y) + (dest.X - next.X) * (dest.X - next.X));
-				// ´Ù¸¥ °æ·Î¿¡¼­ ´õ ºü¸¥ ±æ ÀÌ¹Ì Ã£¾ÒÀ¸¸é ½ºÅµ
+				// ë‹¤ë¥¸ ê²½ë¡œì—ì„œ ë” ë¹ ë¥¸ ê¸¸ ì´ë¯¸ ì°¾ì•˜ìœ¼ë©´ ìŠ¤í‚µ
 				if (open[next.Y, next.X] < g + h)
 					continue;
 
-				// ¿¹¾à ÁøÇà
+				// ì˜ˆì•½ ì§„í–‰
 				open[dest.Y, dest.X] = g + h;
 				pq.Push(new PQNode() { F = g + h, G = g, Y = next.Y, X = next.X });
 				parent[next.Y, next.X] = new Pos(node.Y, node.X);

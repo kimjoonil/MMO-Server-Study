@@ -1,276 +1,272 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using UnityEngine;
 using static Define;
 
 public class CreatureController : MonoBehaviour
 {
-    [SerializeField]
-    protected float _speed = 5.0f;
-    public Vector3Int CellPos { get; set; } = Vector3Int.zero;
-    protected Animator _animator;
-    protected SpriteRenderer _sprite;
+	[SerializeField]
+	public float _speed = 5.0f;
 
-    [SerializeField]
-    protected CreatureState _state = CreatureState.Idle;
-    public virtual CreatureState State
-    {
-        get { return _state; }
-        set
-        {
-            if(_state == value)
-            return;
+	public Vector3Int CellPos { get; set; } = Vector3Int.zero;
 
-            _state = value;
-            UpdateAnimation();
-        }
-    }
+	protected Animator _animator;
+	protected SpriteRenderer _sprite;
 
-    protected MoveDir _lastDir = MoveDir.Down;
-    [SerializeField]
-    protected MoveDir _dir = MoveDir.Down;
-    public MoveDir Dir
-    {
-        get { return _dir; }
-        set
-        {
-            if (_dir == value)
-                return;
+	[SerializeField]
+	protected CreatureState _state = CreatureState.Idle;
+	public virtual CreatureState State
+	{
+		get { return _state; }
+		set
+		{
+			if (_state == value)
+				return;
 
+			_state = value;
+			UpdateAnimation();
+		}
+	}
 
-            _dir = value;
-            if (value != MoveDir.None)
-                _lastDir = value;
+	protected MoveDir _lastDir = MoveDir.Down;
+	[SerializeField]
+	protected MoveDir _dir = MoveDir.Down;
+	public MoveDir Dir
+	{
+		get { return _dir; }
+		set
+		{
+			if (_dir == value)
+				return;
 
-            UpdateAnimation();
-        }
-    }
+			_dir = value;
+			if (value != MoveDir.None)
+				_lastDir = value;
 
-    public MoveDir GetDirFromVec(Vector3Int dir)
-    {
-        if (dir.x > 0)
-            return MoveDir.Right;
-        else if (dir.x < 0)
-            return MoveDir.Left;
-        else if (dir.y > 0)
-            return MoveDir.Up;
-        else if (dir.y < 0)
-            return MoveDir.Down;
-        else
-            return MoveDir.None;
-    }
+			UpdateAnimation();
+		}
+	}
 
-    public Vector3Int GetFrontCellPos()
-    {
-        Vector3Int cellPos = CellPos;
+	public MoveDir GetDirFromVec(Vector3Int dir)
+	{
+		if (dir.x > 0)
+			return MoveDir.Right;
+		else if (dir.x < 0)
+			return MoveDir.Left;
+		else if (dir.y > 0)
+			return MoveDir.Up;
+		else if (dir.y < 0)
+			return MoveDir.Down;
+		else
+			return MoveDir.None;
+	}
 
-        switch(_lastDir)
-        {
-            case MoveDir.Up:
-                cellPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                cellPos += Vector3Int.down;
-                break;
-            case MoveDir.Left:
-                cellPos += Vector3Int.left;
-                break;
-            case MoveDir.Right:
-                cellPos += Vector3Int.right;
-                break;
-        }
-        return cellPos;
-    }
+	public Vector3Int GetFrontCellPos()
+	{
+		Vector3Int cellPos = CellPos;
 
-    protected virtual void UpdateAnimation()
-    {
-        if(_state == CreatureState.Idle)
-        {
-            switch (_lastDir)
-            {
-                case MoveDir.Up:
-                    _animator.Play("Idle_Back");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    _animator.Play("Idle_Front");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    _animator.Play("Idle_Right");
-                    _sprite.flipX = true;
-                    break;
-                case MoveDir.Right:
-                    _animator.Play("Idle_Right");
-                    _sprite.flipX = false;
-                    break;
-            }
-        }
-        else if(_state == CreatureState.Moving)
-        {
-            switch (_dir)
-            {
-                case MoveDir.Up:
-                    _animator.Play("Walk_Back");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    _animator.Play("Walk_Front");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    _animator.Play("Walk_Right");
-                    _sprite.flipX = true;
-                    break;
-                case MoveDir.Right:
-                    _animator.Play("Walk_Right");
-                    _sprite.flipX = false;
-                    break;
+		switch (_lastDir)
+		{
+			case MoveDir.Up:
+				cellPos += Vector3Int.up;
+				break;
+			case MoveDir.Down:
+				cellPos += Vector3Int.down;
+				break;
+			case MoveDir.Left:
+				cellPos += Vector3Int.left;
+				break;
+			case MoveDir.Right:
+				cellPos += Vector3Int.right;
+				break;
+		}
 
-            }
-        }
-        else if (_state == CreatureState.Skill)
-        {
-            switch (_lastDir)
-            {
-                case MoveDir.Up:
-                    _animator.Play("Attack_Back");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Down:
-                    _animator.Play("Attack_Front");
-                    _sprite.flipX = false;
-                    break;
-                case MoveDir.Left:
-                    _animator.Play("Attack_Right");
-                    _sprite.flipX = true;
-                    break;
-                case MoveDir.Right:
-                    _animator.Play("Attack_Right");
-                    _sprite.flipX = false;
-                    break;
+		return cellPos;
+	}
 
-            }
-        }
-        else
-        {
+	protected virtual void UpdateAnimation()
+	{
+		if (_state == CreatureState.Idle)
+		{
+			switch (_lastDir)
+			{
+				case MoveDir.Up:
+					_animator.Play("IDLE_BACK");
+					_sprite.flipX = false;
+					break;
+				case MoveDir.Down:
+					_animator.Play("IDLE_FRONT");
+					_sprite.flipX = false;
+					break;
+				case MoveDir.Left:
+					_animator.Play("IDLE_RIGHT");
+					_sprite.flipX = true;
+					break;
+				case MoveDir.Right:
+					_animator.Play("IDLE_RIGHT");
+					_sprite.flipX = false;
+					break;
+			}
+		}
+		else if (_state == CreatureState.Moving)
+		{
+			switch (_dir)
+			{
+				case MoveDir.Up:
+					_animator.Play("WALK_BACK");
+					_sprite.flipX = false;
+					break;
+				case MoveDir.Down:
+					_animator.Play("WALK_FRONT");
+					_sprite.flipX = false;
+					break;
+				case MoveDir.Left:
+					_animator.Play("WALK_RIGHT");
+					_sprite.flipX = true;
+					break;
+				case MoveDir.Right:
+					_animator.Play("WALK_RIGHT");
+					_sprite.flipX = false;
+					break;
+			}
+		}
+		else if (_state == CreatureState.Skill)
+		{
+			switch (_lastDir)
+			{
+				case MoveDir.Up:
+					_animator.Play("ATTACK_BACK");
+					_sprite.flipX = false;
+					break;
+				case MoveDir.Down:
+					_animator.Play("ATTACK_FRONT");
+					_sprite.flipX = false;
+					break;
+				case MoveDir.Left:
+					_animator.Play("ATTACK_RIGHT");
+					_sprite.flipX = true;
+					break;
+				case MoveDir.Right:
+					_animator.Play("ATTACK_RIGHT");
+					_sprite.flipX = false;
+					break;
+			}
+		}
+		else
+		{
 
-        }
-    }
-    void Start()
-    {
-        Init();
-    }
+		}
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        UpdateController();
+	void Start()
+	{
+		Init();
+	}
 
-    }
+	void Update()
+	{
+		UpdateController();
+	}
 
-    protected virtual void Init()
-    {
-        _animator = GetComponent<Animator>();
-        _sprite = GetComponent<SpriteRenderer>();
-        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        transform.position = pos;
-    }
+	protected virtual void Init()
+	{
+		_animator = GetComponent<Animator>();
+		_sprite = GetComponent<SpriteRenderer>();
+		Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+		transform.position = pos;
+	}
 
-    protected virtual void UpdateController()
-    {
-        switch(State)
-        {
-            case CreatureState.Idle:
-                UpdateIdle();
-                break;
-            case CreatureState.Moving:
-                UpdateMoving();
-                break;
-            case CreatureState.Skill:
-                UpdateSkill();
-                break;
-            case CreatureState.Dead:
-                UpdateDead();
-                break;
-        }
+	protected virtual void UpdateController()
+	{
+		switch (State)
+		{
+			case CreatureState.Idle:
+				UpdateIdle();
+				break;
+			case CreatureState.Moving:
+				UpdateMoving();
+				break;
+			case CreatureState.Skill:
+				UpdateSkill();
+				break;
+			case CreatureState.Dead:
+				UpdateDead();
+				break;
+		}
+	}
 
-        
-    }
+	protected virtual void UpdateIdle()
+	{
+	}
 
-    // ¿Ãµø √≥∏Æ
-    protected virtual void UpdateMoving()
-    {
-        Vector3 destpos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        Vector3 moveDir = destpos - transform.position;
+	// Ïä§Î•¥Î•µ Ïù¥ÎèôÌïòÎäî Í≤ÉÏùÑ Ï≤òÎ¶¨
+	protected virtual void UpdateMoving()
+	{
+		Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+		Vector3 moveDir = destPos - transform.position;
 
-        float dist = moveDir.magnitude;
-        if (dist < _speed * Time.deltaTime)
-        {
-            transform.position = destpos;
-            //æ÷¥œ∏ﬁ¿Ãº« ¡˜¡¢ ƒ¡∆Æ∑—
-            MoveToNextPos();
-        }
-        else
-        {
-            transform.position += moveDir.normalized * _speed * Time.deltaTime;
-            State = CreatureState.Moving;
-        }
-    }
+		// ÎèÑÏ∞© Ïó¨Î∂Ä Ï≤¥ÌÅ¨
+		float dist = moveDir.magnitude;
+		if (dist < _speed * Time.deltaTime)
+		{
+			transform.position = destPos;
+			MoveToNextPos();
+		}
+		else
+		{
+			transform.position += moveDir.normalized * _speed * Time.deltaTime;
+			State = CreatureState.Moving;
+		}
+	}
 
-    protected virtual void UpdateIdle()
-    {
+	protected virtual void MoveToNextPos()
+	{
+		if (_dir == MoveDir.None)
+		{
+			State = CreatureState.Idle;
+			return;
+		}
 
-    }
+		Vector3Int destPos = CellPos;
 
-    protected virtual void MoveToNextPos()
-    {
-        if(_dir == MoveDir.None)
-        {
-            State = CreatureState.Idle;
-            return;
-        }
+		switch (_dir)
+		{
+			case MoveDir.Up:
+				destPos += Vector3Int.up;
+				break;
+			case MoveDir.Down:
+				destPos += Vector3Int.down;
+				break;
+			case MoveDir.Left:
+				destPos += Vector3Int.left;
+				break;
+			case MoveDir.Right:
+				destPos += Vector3Int.right;
+				break;
+		}
 
-        Vector3Int destPos = CellPos;
+		if (Managers.Map.CanGo(destPos))
+		{
+			if (Managers.Object.Find(destPos) == null)
+			{
+				CellPos = destPos;
+			}
+		}
+	}
 
-        switch (_dir)
-        {
-            case MoveDir.Up:
-                destPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3Int.down;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3Int.left;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3Int.right;
-                break;
-        }
+	protected virtual void UpdateSkill()
+	{
 
-        if (Managers.Map.CanGo(destPos))
-        {
-            if (Managers.Object.Find(destPos) == null)
-            {
-                CellPos = destPos;
+	}
 
-            }
-        }
-    }
+	protected virtual void UpdateDead()
+	{
 
-    protected virtual void UpdateSkill()
-    {
+	}
 
-    }
+	public virtual void OnDamaged()
+	{
 
-    protected virtual void UpdateDead()
-    {
-
-    }
-
-    public virtual void OnDamaged()
-    {
-
-    }
+	}
 }

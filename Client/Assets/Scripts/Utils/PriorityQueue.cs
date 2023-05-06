@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,24 +10,24 @@ public class PriorityQueue<T> where T : IComparable<T>
 	// O(logN)
 	public void Push(T data)
 	{
-		// ÈüÀÇ ¸Ç ³¡¿¡ »õ·Î¿î µ¥ÀÌÅÍ¸¦ »ğÀÔÇÑ´Ù
+		// í™ì˜ ë§¨ ëì— ìƒˆë¡œìš´ ë°ì´í„°ë¥¼ ì‚½ì…í•œë‹¤
 		_heap.Add(data);
 
 		int now = _heap.Count - 1;
-		// µµÀå±ú±â¸¦ ½ÃÀÛ
+		// ë„ì¥ê¹¨ê¸°ë¥¼ ì‹œì‘
 		while (now > 0)
 		{
-			// µµÀå±ú±â¸¦ ½Ãµµ
+			// ë„ì¥ê¹¨ê¸°ë¥¼ ì‹œë„
 			int next = (now - 1) / 2;
 			if (_heap[now].CompareTo(_heap[next]) < 0)
-				break; // ½ÇÆĞ
+				break; // ì‹¤íŒ¨
 
-			// µÎ °ªÀ» ±³Ã¼ÇÑ´Ù
+			// ë‘ ê°’ì„ êµì²´í•œë‹¤
 			T temp = _heap[now];
 			_heap[now] = _heap[next];
 			_heap[next] = temp;
 
-			// °Ë»ç À§Ä¡¸¦ ÀÌµ¿ÇÑ´Ù
+			// ê²€ì‚¬ ìœ„ì¹˜ë¥¼ ì´ë™í•œë‹¤
 			now = next;
 		}
 	}
@@ -35,16 +35,16 @@ public class PriorityQueue<T> where T : IComparable<T>
 	// O(logN)
 	public T Pop()
 	{
-		// ¹İÈ¯ÇÒ µ¥ÀÌÅÍ¸¦ µû·Î ÀúÀå
+		// ë°˜í™˜í•  ë°ì´í„°ë¥¼ ë”°ë¡œ ì €ì¥
 		T ret = _heap[0];
 
-		// ¸¶Áö¸· µ¥ÀÌÅÍ¸¦ ·çÆ®·Î ÀÌµ¿ÇÑ´Ù
+		// ë§ˆì§€ë§‰ ë°ì´í„°ë¥¼ ë£¨íŠ¸ë¡œ ì´ë™í•œë‹¤
 		int lastIndex = _heap.Count - 1;
 		_heap[0] = _heap[lastIndex];
 		_heap.RemoveAt(lastIndex);
 		lastIndex--;
 
-		// ¿ªÀ¸·Î ³»·Á°¡´Â µµÀå±ú±â ½ÃÀÛ
+		// ì—­ìœ¼ë¡œ ë‚´ë ¤ê°€ëŠ” ë„ì¥ê¹¨ê¸° ì‹œì‘
 		int now = 0;
 		while (true)
 		{
@@ -52,22 +52,22 @@ public class PriorityQueue<T> where T : IComparable<T>
 			int right = 2 * now + 2;
 
 			int next = now;
-			// ¿ŞÂÊ°ªÀÌ ÇöÀç°ªº¸´Ù Å©¸é, ¿ŞÂÊÀ¸·Î ÀÌµ¿
+			// ì™¼ìª½ê°’ì´ í˜„ì¬ê°’ë³´ë‹¤ í¬ë©´, ì™¼ìª½ìœ¼ë¡œ ì´ë™
 			if (left <= lastIndex && _heap[next].CompareTo(_heap[left]) < 0)
 				next = left;
-			// ¿À¸¥°ªÀÌ ÇöÀç°ª(¿ŞÂÊ ÀÌµ¿ Æ÷ÇÔ)º¸´Ù Å©¸é, ¿À¸¥ÂÊÀ¸·Î ÀÌµ¿
+			// ì˜¤ë¥¸ê°’ì´ í˜„ì¬ê°’(ì™¼ìª½ ì´ë™ í¬í•¨)ë³´ë‹¤ í¬ë©´, ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì´ë™
 			if (right <= lastIndex && _heap[next].CompareTo(_heap[right]) < 0)
 				next = right;
 
-			// ¿ŞÂÊ/¿À¸¥ÂÊ ¸ğµÎ ÇöÀç°ªº¸´Ù ÀÛÀ¸¸é Á¾·á
+			// ì™¼ìª½/ì˜¤ë¥¸ìª½ ëª¨ë‘ í˜„ì¬ê°’ë³´ë‹¤ ì‘ìœ¼ë©´ ì¢…ë£Œ
 			if (next == now)
 				break;
 
-			// µÎ °ªÀ» ±³Ã¼ÇÑ´Ù
+			// ë‘ ê°’ì„ êµì²´í•œë‹¤
 			T temp = _heap[now];
 			_heap[now] = _heap[next];
 			_heap[next] = temp;
-			// °Ë»ç À§Ä¡¸¦ ÀÌµ¿ÇÑ´Ù
+			// ê²€ì‚¬ ìœ„ì¹˜ë¥¼ ì´ë™í•œë‹¤
 			now = next;
 		}
 

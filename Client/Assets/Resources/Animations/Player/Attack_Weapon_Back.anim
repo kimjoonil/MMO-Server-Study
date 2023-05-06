@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Attack_Weapon_Back
+  m_Name: ATTACK_WEAPON_BACK
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
