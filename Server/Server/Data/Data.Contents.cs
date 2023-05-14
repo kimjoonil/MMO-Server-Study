@@ -1,12 +1,11 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Text;
 
-namespace Data
-{ 
-#region Stat
+namespace Server.Data
+{
+	#region Stat
 	[Serializable]
 	public class Stat
 	{
@@ -29,13 +28,13 @@ namespace Data
 			return dict;
 		}
 	}
-	#endregion
+    #endregion
 
-	#region Skill
+    #region Skill
 
 	[Serializable]
 	public class Skill
-	{
+    {
 		public int id;
 		public string name;
 		public float cooldown;
@@ -45,12 +44,12 @@ namespace Data
 	}
 
 	public class ProjectileInfo
-	{
+    {
 		public string name;
 		public float speed;
 		public int range;
 		public string prefab;
-	}
+    }
 
 	[Serializable]
 	public class SkillData : ILoader<int, Skill>
@@ -61,7 +60,7 @@ namespace Data
 		{
 			Dictionary<int, Skill> dict = new Dictionary<int, Skill>();
 			foreach (Skill skill in skills)
-				dict.Add(skill.id, skill);
+				dict.Add(skill.id , skill);
 			return dict;
 		}
 	}

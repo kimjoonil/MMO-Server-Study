@@ -73,7 +73,7 @@ public class MyPlayerController : PlayerController
 			Debug.Log("Skill !");
 
 			C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-			skill.Info.SkillId = 1;
+			skill.Info.SkillId = 2;
 			Managers.Network.Send(skill);
 
 			_coSkillCooltime = StartCoroutine("CoInputCooltime", 0.2f);
@@ -81,7 +81,7 @@ public class MyPlayerController : PlayerController
 	}
 
 	Coroutine _coSkillCooltime;
-	IEnumerator CoInputColltime(float time)
+	IEnumerator CoInputCooltime(float time)
     {
 		yield return new WaitForSeconds(time);
 		_coSkillCooltime = null;
