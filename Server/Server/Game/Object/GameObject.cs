@@ -11,6 +11,19 @@ namespace Server.Game
 
         public ObjectInfo Info { get; set; } = new ObjectInfo();
         public GameRoom Room { get; set; }
+		public StatInfo Stat { get; private set; } = new StatInfo();
+
+		public float Speed
+        {
+			get { return Stat.Speed; }
+            set { Stat.Speed = value; }
+        }
+
+		public GameObject()
+        {
+			Info.PosInfo = PosInfo;
+			Info.StatInfo = Stat;
+        }
 
 		public int Id
         {
@@ -19,11 +32,6 @@ namespace Server.Game
         }
 
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
-
-        public GameObject()
-        {
-            Info.PosInfo = PosInfo;
-        }
 
 		public Vector2Int CellPos
 		{
@@ -66,5 +74,10 @@ namespace Server.Game
 
 			return cellPos;
 		}
+
+		public virtual void OnDamaged(GameObject attacker , int damage)
+        {
+
+        }
 	}
 }
