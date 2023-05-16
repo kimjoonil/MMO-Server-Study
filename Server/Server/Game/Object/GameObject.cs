@@ -77,7 +77,23 @@ namespace Server.Game
 
 		public virtual void OnDamaged(GameObject attacker , int damage)
         {
+			Stat.Hp = Math.Max(Stat.Hp - damage, 0);
+
+			S_ChangeHp changePacket = new S_ChangeHp();
+			changePacket.ObjectId = Id;
+			changePacket.Hp = Stat.Hp;
+			Room.Broadcast(changePacket);
+
+			if(Stat.Hp <= 0)
+            {
+				Stat.Hp = 0;
+            }
+        }
+
+		public virtual void OnDead(GameObject attacker)
+        {
 
         }
 	}
+
 }

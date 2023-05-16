@@ -7,6 +7,7 @@ using static Define;
 
 public class CreatureController : MonoBehaviour
 {
+	HpBar _hpBar;
 	public int Id { get; set; }
 
 	StatInfo _stat = new StatInfo();
@@ -21,13 +22,25 @@ public class CreatureController : MonoBehaviour
 			_stat.Hp = value.Hp;
 			_stat.MaxHp = value.MaxHp;
 			_stat.Speed = value.Speed;
-        }
+			UpdateHpBar();
+		}
 	}
 
 	public float Speed
     {
         get { return Stat.Speed; }
 		set { Stat.Speed = value; }
+    }
+
+	public int Hp
+    {
+        get { return Stat.Hp; }
+        set
+        {
+			Stat.Hp = value;
+			UpdateHpBar();
+		}
+
     }
 
 	protected bool _updated = false;
@@ -47,6 +60,27 @@ public class CreatureController : MonoBehaviour
 			_positionInfo = value;
         }
 	}
+	protected void AddHpBar()
+    {
+		GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
+		go.transform.localPosition = new Vector3(0, 0.5f, 0);
+		go.name = "HpBar";
+		_hpBar = go.GetComponent<HpBar>();
+		UpdateHpBar();
+
+	}
+
+	void UpdateHpBar()
+    {
+		if (_hpBar == null)
+			return;
+
+		float ratio = 0.0f;
+		if(Stat.MaxHp > 0)
+			ratio = ((float)Hp / Stat.MaxHp);
+		_hpBar.SetHpBar(ratio);
+    }
+
 
 	public void SyncPos()
     {
