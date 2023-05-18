@@ -48,8 +48,16 @@ public class ObjectManager
 		}
 		else if(objectType == GameObjectType.Monster)
         {
+			GameObject go = Managers.Resource.Instantiate("Creature/Monster");
+			go.name = info.Name;
+			_objects.Add(info.ObjectId, go);
 
-        }
+			MonsterController mc = go.GetComponent<MonsterController>();
+			mc.Id = info.ObjectId;
+			mc.PosInfo = info.PosInfo;
+			mc.Stat = info.StatInfo;
+			mc.SyncPos();
+		}
 		else if(objectType == GameObjectType.Projectile)
         {
 			GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
@@ -74,15 +82,6 @@ public class ObjectManager
 		Managers.Resource.Destroy(go);
 	}
 
-	public void RemoveMyPlayer()
-    {
-		if (MyPlayer == null)
-			return;
-
-		Remove(MyPlayer.Id);
-		MyPlayer = null;
-    }
-
 	public GameObject FindById(int id)
     {
 		GameObject go = null;
@@ -90,7 +89,7 @@ public class ObjectManager
 		return go;
     }
 
-	public GameObject Find(Vector3Int cellPos)
+	public GameObject FindCreature(Vector3Int cellPos)
 	{
 		foreach (GameObject obj in _objects.Values)
 		{
@@ -121,5 +120,6 @@ public class ObjectManager
 		foreach (GameObject obj in _objects.Values)
 			Managers.Resource.Destroy(obj);
 			_objects.Clear();
+		MyPlayer = null;
 	}
 }

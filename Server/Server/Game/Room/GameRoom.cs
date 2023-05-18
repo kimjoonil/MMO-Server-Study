@@ -21,12 +21,21 @@ namespace Server.Game
         public void Init(int mapId)
         {
             Map.LoadMap(mapId);
+
+            Monster monster = ObjectrManager.Instance.Add<Monster>();
+            monster.CellPos = new Vector2Int(5, 5);
+            EnterGame(monster);
         }
 
         public void Update()
         {
             lock(_lock)
             {
+                foreach(Monster monster in _monsters.Values)
+                {
+                    monster.Update();
+                }
+
                 foreach(Projectile projectile in _projectiles.Values)
                 {
                     projectile.Update();
@@ -49,6 +58,9 @@ namespace Server.Game
                     _players.Add(gameObject.Id, player);
                     player.Room = this;
 
+                    Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
+
+
                     // 플레이어 본인클라이언트에 전송
                     {
                         S_EnterGame enterPacket = new S_EnterGame();
@@ -61,6 +73,12 @@ namespace Server.Game
                             if (player != p)
                                 spawnPacket.Objects.Add(p.Info);
                         }
+                        foreach(Monster m in _monsters.Values)
+                            spawnPacket.Objects.Add(m.Info);
+                        
+                        foreach (Projectile p in _projectiles.Values)
+                            spawnPacket.Objects.Add(p.Info);
+                        
                         player.Session.Send(spawnPacket);
                     }
                 }
@@ -69,6 +87,8 @@ namespace Server.Game
                     Monster monster = gameObject as Monster;
                     _monsters.Add(gameObject.Id, monster);
                     monster.Room = this;
+
+                    Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
                 }
                 else if(type == GameObjectType.Projectile)
                 {
@@ -225,6 +245,16 @@ namespace Server.Game
                         break;
                 }
             }
+        }
+
+        public Player FindPlayer(Func<GameObject, bool> condition)
+        {
+            foreach(Player player in _players.Values)
+            {
+                if (condition.Invoke(player))
+                    return player;
+            }
+            return null;
         }
         public void Broadcast(IMessage packet)
         {

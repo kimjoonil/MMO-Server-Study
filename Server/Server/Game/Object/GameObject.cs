@@ -5,24 +5,42 @@ using System.Text;
 
 namespace Server.Game
 {
-    public class GameObject
-    {
-        public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
+	public class GameObject
+	{
+		public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
 
-        public ObjectInfo Info { get; set; } = new ObjectInfo();
-        public GameRoom Room { get; set; }
+		public ObjectInfo Info { get; set; } = new ObjectInfo();
+		public GameRoom Room { get; set; }
 		public StatInfo Stat { get; private set; } = new StatInfo();
 
 		public float Speed
-        {
+		{
 			get { return Stat.Speed; }
-            set { Stat.Speed = value; }
-        }
+			set { Stat.Speed = value; }
+		}
 
-		public GameObject()
+		public MoveDir Dir
+		{
+			get { return PosInfo.MoveDir; }
+			set { PosInfo.MoveDir = value; }
+		}
+
+
+        public CreatureState State
+		{
+            get { return PosInfo.State; }
+			set { PosInfo.State = value; }
+		}
+
+        public GameObject()
         {
 			Info.PosInfo = PosInfo;
 			Info.StatInfo = Stat;
+        }
+
+		public virtual void Update()
+        {
+
         }
 
 		public int Id
@@ -75,6 +93,18 @@ namespace Server.Game
 			return cellPos;
 		}
 
+		public static MoveDir GetDirFromVec(Vector2Int dir)
+		{
+			if (dir.x > 0)
+				return MoveDir.Right;
+			else if (dir.x < 0)
+				return MoveDir.Left;
+			else if (dir.y > 0)
+				return MoveDir.Up;
+			else
+				return MoveDir.Down;
+		}
+
 		public virtual void OnDamaged(GameObject attacker , int damage)
         {
 			Stat.Hp = Math.Max(Stat.Hp - damage, 0);
@@ -86,13 +116,28 @@ namespace Server.Game
 
 			if(Stat.Hp <= 0)
             {
-				Stat.Hp = 0;
-            }
+				OnDead(attacker);
+			}
         }
 
 		public virtual void OnDead(GameObject attacker)
         {
+			S_Die diePacket = new S_Die();
+			diePacket.ObjectId = Id;
+			diePacket.AttackerId = attacker.Id;
+			Room.Broadcast(diePacket);
 
+
+			GameRoom room = Room;
+			room.LeaveGame(Id);
+
+			Stat.Hp = Stat.MaxHp;
+			PosInfo.State = CreatureState.Idle;
+			PosInfo.MoveDir = MoveDir.Down;
+			PosInfo.PosX = 0;
+			PosInfo.PosY = 0;
+
+			room.EnterGame(this);
         }
 	}
 
