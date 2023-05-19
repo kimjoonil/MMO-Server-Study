@@ -24,7 +24,7 @@ class PacketHandler
 		if (room == null)
 			return;
 
-		room.HandleMove(player, movePacket);
+		room.Push(room.HandleMove, player, movePacket);
 
 	}
 
@@ -41,6 +41,6 @@ class PacketHandler
 		if (room == null)
 			return;
 
-		room.HandleSkill(player, SkillPacket);
+		room.Push(room.HandleSkill, player, SkillPacket);
 	}
 }
