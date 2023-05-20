@@ -26,6 +26,7 @@ namespace Server.Game
             EnterGame(monster);
         }
 
+        // 어디선가 주기적으로 호출해줘야 한다
         public void Update()
         {
             foreach(Monster monster in _monsters.Values)
@@ -37,7 +38,8 @@ namespace Server.Game
             {
                 projectile.Update();
             }
-       
+
+            Flush();
         }
 
         public void EnterGame(GameObject gameObject)
@@ -127,9 +129,9 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
-
-                monster.Room = null;
+                
                 Map.ApplyLeave(monster);
+                monster.Room = null;
             }
             else if (type == GameObjectType.Projectile)
             {
