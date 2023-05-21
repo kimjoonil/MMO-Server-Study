@@ -37,28 +37,34 @@ namespace Server.Game
 
 		public void Flush()
 		{
+			// 타이머를 플러시 합니다.
 			_timer.Flush();
 
 			while (true)
 			{
-				IJob job = Pop();
+				// pop을 통해 작업을 가져옵니다.
+				IJob job = Pop();   
 				if (job == null)
 					return;
 
-				job.Execute();
+				// 작업을 실행합니다.
+				job.Execute();       
 			}
 		}
 
 		IJob Pop()
 		{
+			//동기화를 위해 lock을 겁니다.
 			lock (_lock)
 			{
 				if (_jobQueue.Count == 0)
 				{
+					// 작업 큐가 비어있다면 null을 반환합니다.
 					_flush = false;
 					return null;
 				}
-				return _jobQueue.Dequeue();
+				// 작업 큐에서 작업을 가져옵니다.
+				return _jobQueue.Dequeue();     
 			}
 		}
 	}
